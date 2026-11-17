@@ -1,0 +1,1453 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>YAYA! Pixel Discovery</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+    --pink: #f02b91;
+    --pink-light: #ff64b5;
+    --lavender: #c98bd8;
+    --red: #f21b12;
+    --black: #080808;
+    --white: #fff7f5;
+    --grey: #353535;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--black);
+    font-family: 'Space Grotesk', sans-serif;
+    overflow: hidden;
+}
+
+/* BACKGROUND IMAGE */
+
+#backgroundImage {
+    position: fixed;
+    inset: 0;
+    background-color: var(--black);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    z-index: 0;
+}
+
+/* PIXEL CANVAS */
+
+#pixelCanvas {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    display: block;
+    cursor: crosshair;
+    z-index: 1;
+}
+
+/* DECORATIVE STAR */
+
+.star {
+    position: fixed;
+    width: 120px;
+    height: 120px;
+    background: var(--lavender);
+    clip-path: polygon(
+        50% 0%, 62% 34%, 100% 15%,
+        72% 50%, 100% 85%, 62% 66%,
+        50% 100%, 38% 66%, 0% 85%,
+        28% 50%, 0% 15%, 38% 34%
+    );
+    z-index: 5;
+    pointer-events: none;
+    animation: starFloat 6s ease-in-out infinite;
+}
+
+.star-one {
+    top: 20%;
+    left: 5%;
+    width: 85px;
+    height: 85px;
+    transform: rotate(15deg);
+}
+
+.star-two {
+    bottom: 12%;
+    right: 6%;
+    width: 110px;
+    height: 110px;
+    background: var(--red);
+    animation-delay: 1s;
+}
+
+@keyframes starFloat {
+    0%, 100% {
+        translate: 0 0;
+    }
+    50% {
+        translate: 0 -12px;
+    }
+}
+
+/* TOP LEFT BRAND */
+
+.brand {
+    position: fixed;
+    top: 25px;
+    left: 25px;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.brand h1 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(22px, 4vw, 38px);
+    color: var(--white);
+    line-height: 0.9;
+    letter-spacing: -2px;
+    transform: rotate(-3deg);
+}
+
+.brand p {
+    color: var(--white);
+    font-size: 9px;
+    letter-spacing: 3px;
+    margin-top: 9px;
+    opacity: 0.7;
+}
+
+/* PROGRESS PANEL */
+
+.progress-panel {
+    position: fixed;
+    bottom: 25px;
+    left: 25px;
+    width: 210px;
+    padding: 16px;
+    background: var(--pink);
+    color: var(--black);
+    z-index: 10;
+    border: 2px solid var(--black);
+    border-radius: 0 18px 0 18px;
+    transform: rotate(-1deg);
+    pointer-events: none;
+}
+
+.progress-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.progress-number {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 36px;
+    line-height: 1.1;
+    margin: 5px 0;
+}
+
+.progress-track {
+    width: 100%;
+    height: 7px;
+    background: var(--black);
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--white);
+    transition: width 0.12s linear;
+}
+
+.progress-count {
+    font-size: 9px;
+    margin-top: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* INSTRUCTION */
+
+.tip {
+    position: fixed;
+    bottom: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--white);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    white-space: nowrap;
+    z-index: 10;
+    pointer-events: none;
+    animation: tipFloat 2.5s ease-in-out infinite;
+    transition: opacity 0.5s ease;
+}
+
+.tip.hide {
+    opacity: 0;
+    animation: none;
+}
+
+.tip-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--pink);
+    border-radius: 50%;
+    animation: dotPulse 1s infinite;
+}
+
+@keyframes tipFloat {
+    0%, 100% { margin-bottom: 0; }
+    50% { margin-bottom: 7px; }
+}
+
+@keyframes dotPulse {
+    0%, 100% { transform: scale(0.7); }
+    50% { transform: scale(1.3); }
+}
+
+/* SETTINGS TOGGLE */
+
+.settings-toggle {
+    position: fixed;
+    top: 22px;
+    right: 22px;
+    z-index: 26;
+    padding: 12px 17px;
+    background: var(--red);
+    color: white;
+    border: 2px solid var(--black);
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 10px;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 var(--black);
+    transition: transform 0.2s;
+}
+
+.settings-toggle:hover {
+    transform: rotate(-3deg) scale(1.05);
+}
+
+/* SETTINGS PANEL */
+
+.settings {
+    position: fixed;
+    top: 75px;
+    right: 22px;
+    width: 270px;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    padding: 20px;
+    background: var(--lavender);
+    color: var(--black);
+    border: 3px solid var(--black);
+    border-radius: 0 22px 0 22px;
+    z-index: 25;
+    box-shadow: 7px 7px 0 rgba(0,0,0,0.5);
+    transition: transform 0.4s cubic-bezier(.2,.8,.2,1),
+                opacity 0.3s ease;
+}
+
+.settings.hidden-settings {
+    transform: translateX(120%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.settings h2 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 20px;
+    line-height: 1;
+    margin-bottom: 5px;
+}
+
+.settings-subtitle {
+    font-size: 9px;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+    opacity: 0.65;
+}
+
+.control {
+    margin-bottom: 18px;
+}
+
+.control-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 9px;
+}
+
+.control label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.control span {
+    font-size: 11px;
+    font-weight: 700;
+}
+
+input[type="range"] {
+    width: 100%;
+    accent-color: var(--red);
+    cursor: pointer;
+}
+
+.section-divider {
+    height: 2px;
+    background: rgba(0,0,0,0.2);
+    margin: 17px 0;
+}
+
+/* BUTTONS */
+
+.upload-button,
+.settings button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: var(--black);
+    color: white;
+    border: 2px solid var(--black);
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: 0.2s ease;
+}
+
+.upload-button:hover,
+.settings button:hover {
+    background: var(--red);
+    border-color: var(--red);
+}
+
+.remove-button {
+    margin-top: 8px;
+    background: var(--red) !important;
+    border-color: var(--red) !important;
+}
+
+.image-name {
+    display: block;
+    margin-top: 8px;
+    font-size: 9px;
+    opacity: 0.7;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.reset-button {
+    background: var(--white) !important;
+    color: var(--black) !important;
+}
+
+.reset-button:hover {
+    background: var(--red) !important;
+    color: white !important;
+}
+
+/* WIN SCREEN */
+
+.win-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0,0,0,0.82);
+    backdrop-filter: blur(12px);
+}
+
+.win-screen.show {
+    display: flex;
+    animation: winFade 0.5s ease;
+}
+
+.win-card {
+    position: relative;
+    width: 100%;
+    max-width: 430px;
+    padding: 35px 30px;
+    background: var(--pink);
+    border: 5px solid var(--black);
+    border-radius: 0 35px 0 35px;
+    box-shadow: 10px 10px 0 var(--lavender);
+    text-align: center;
+    color: var(--black);
+    animation: winPop 0.65s cubic-bezier(.2,.8,.2,1);
+    overflow: hidden;
+}
+
+.win-star {
+    position: absolute;
+    top: -28px;
+    right: -20px;
+    width: 110px;
+    height: 110px;
+    background: var(--lavender);
+    clip-path: polygon(
+        50% 0%, 62% 34%, 100% 15%,
+        72% 50%, 100% 85%, 62% 66%,
+        50% 100%, 38% 66%, 0% 85%,
+        28% 50%, 0% 15%, 38% 34%
+    );
+}
+
+.win-icon {
+    font-size: 35px;
+    margin-bottom: 10px;
+}
+
+.win-card h1 {
+    position: relative;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(27px, 6vw, 39px);
+    line-height: 0.95;
+    letter-spacing: -2px;
+    margin-bottom: 10px;
+    transform: rotate(-2deg);
+}
+
+.win-card .subtitle {
+    font-size: 11px;
+    margin-bottom: 23px;
+}
+
+.score {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 62px;
+    line-height: 1;
+}
+
+.score-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    margin-top: 7px;
+    margin-bottom: 23px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    margin-bottom: 22px;
+}
+
+.stat-box {
+    padding: 13px 8px;
+    background: var(--lavender);
+    border: 2px solid var(--black);
+}
+
+.stat-box p {
+    font-size: 9px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.stat-box h3 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 16px;
+}
+
+.play-again {
+    width: 100%;
+    padding: 14px;
+    background: var(--black);
+    color: white;
+    border: 2px solid var(--black);
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 11px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.play-again:hover {
+    background: var(--red);
+}
+
+/* ANIMATIONS */
+
+@keyframes winFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes winPop {
+    from {
+        opacity: 0;
+        transform: translateY(25px) scale(0.9) rotate(-3deg);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotate(0);
+    }
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    .brand {
+        top: 15px;
+        left: 15px;
+    }
+
+    .brand h1 {
+        font-size: 23px;
+    }
+
+    .settings-toggle {
+        top: 15px;
+        right: 15px;
+        padding: 10px;
+    }
+
+    .settings {
+        top: 65px;
+        right: 15px;
+        width: 235px;
+        max-height: calc(100vh - 85px);
+    }
+
+    .progress-panel {
+        bottom: 15px;
+        left: 12px;
+        width: 155px;
+        padding: 11px;
+    }
+
+    .progress-number {
+        font-size: 28px;
+    }
+
+    .tip {
+        bottom: 24px;
+        font-size: 8px;
+        letter-spacing: 1px;
+    }
+
+    .star-one {
+        display: none;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- IMAGE BACKGROUND -->
+
+<div id="backgroundImage"></div>
+
+<!-- DECORATIVE SHAPES -->
+
+<div class="star star-one"></div>
+<div class="star star-two"></div>
+
+<!-- PIXEL CANVAS -->
+
+<canvas id="pixelCanvas"></canvas>
+
+<!-- BRAND -->
+
+<div class="brand">
+    <h1>YAYA!</h1>
+    <p>PIXEL DISCOVERY GAME · 001</p>
+</div>
+
+<!-- INSTRUCTION -->
+
+<div class="tip" id="tip">
+    <span class="tip-dot"></span>
+    MOVE YOUR CURSOR TO REVEAL
+</div>
+
+<!-- PROGRESS -->
+
+<div class="progress-panel">
+
+    <p class="progress-label">IMAGE DISCOVERY</p>
+
+    <h2 class="progress-number" id="progressText">
+        0%
+    </h2>
+
+    <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <p class="progress-count" id="pixelCount">
+        0 PIXELS FOUND
+    </p>
+
+</div>
+
+<!-- SETTINGS TOGGLE -->
+
+<button class="settings-toggle" id="toggleSettings">
+    ✕ HIDE SETTINGS
+</button>
+
+<!-- SETTINGS PANEL -->
+
+<div class="settings" id="settingsPanel">
+
+    <h2>THE CONTROLS.</h2>
+
+    <p class="settings-subtitle">
+        MAKE YOUR OWN PIXEL EXPERIENCE
+    </p>
+
+    <!-- IMAGE UPLOAD -->
+
+    <div class="control">
+
+        <label class="upload-button" for="imageUpload">
+            + ADD YOUR IMAGE
+        </label>
+
+        <input
+            type="file"
+            id="imageUpload"
+            accept="image/*"
+            hidden
+        >
+
+        <span class="image-name" id="imageName">
+            No image selected
+        </span>
+
+        <button
+            class="remove-button"
+            id="removeImage"
+            style="display:none"
+        >
+            REMOVE IMAGE
+        </button>
+
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- BRUSH SIZE -->
+
+    <div class="control">
+
+        <div class="control-header">
+            <label>DISSOLVE BRUSH SIZE</label>
+            <span id="radiusValue">90px</span>
+        </div>
+
+        <input
+            type="range"
+            id="radiusControl"
+            min="20"
+            max="250"
+            value="90"
+            step="5"
+        >
+
+    </div>
+
+    <!-- SPEED -->
+
+    <div class="control">
+
+        <div class="control-header">
+            <label>DISSOLVE SPEED</label>
+            <span id="speedValue">3x</span>
+        </div>
+
+        <input
+            type="range"
+            id="speedControl"
+            min="0.5"
+            max="5"
+            value="3"
+            step="0.5"
+        >
+
+    </div>
+
+    <!-- PIXEL SIZE -->
+
+    <div class="control">
+
+        <div class="control-header">
+            <label>PIXEL SIZE</label>
+            <span id="pixelValue">8px</span>
+        </div>
+
+        <input
+            type="range"
+            id="pixelControl"
+            min="3"
+            max="25"
+            value="8"
+            step="1"
+        >
+
+    </div>
+
+    <div class="section-divider"></div>
+
+    <button class="reset-button" id="resetButton">
+        ↻ RESET GAME
+    </button>
+
+</div>
+
+<!-- WIN SCREEN -->
+
+<div class="win-screen" id="winScreen">
+
+    <div class="win-card">
+
+        <div class="win-star"></div>
+
+        <div class="win-icon">✦ ★ ✦</div>
+
+        <h1>YAYA!<br>YOU HAVE WON!</h1>
+
+        <p class="subtitle">
+            YOU REVEALED THE ENTIRE IMAGE!
+        </p>
+
+        <div class="score" id="finalScore">0</div>
+
+        <p class="score-label">YOUR FINAL SCORE</p>
+
+        <div class="stats">
+
+            <div class="stat-box">
+                <p>TIME TAKEN</p>
+                <h3 id="finalTime">0s</h3>
+            </div>
+
+            <div class="stat-box">
+                <p>PIXELS DISCOVERED</p>
+                <h3 id="finalPixels">0</h3>
+            </div>
+
+            <div class="stat-box">
+                <p>COMPLETION</p>
+                <h3>100%</h3>
+            </div>
+
+            <div class="stat-box">
+                <p>STATUS</p>
+                <h3>WINNER!</h3>
+            </div>
+
+        </div>
+
+        <button class="play-again" id="playAgain">
+            PLAY AGAIN ↗
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+// ========================================
+// ELEMENTS
+// ========================================
+
+const canvas = document.getElementById("pixelCanvas");
+const ctx = canvas.getContext("2d");
+
+const tip = document.getElementById("tip");
+
+const backgroundImage =
+    document.getElementById("backgroundImage");
+
+const imageUpload =
+    document.getElementById("imageUpload");
+
+const imageName =
+    document.getElementById("imageName");
+
+const removeImage =
+    document.getElementById("removeImage");
+
+const winScreen =
+    document.getElementById("winScreen");
+
+const settingsPanel =
+    document.getElementById("settingsPanel");
+
+const toggleSettings =
+    document.getElementById("toggleSettings");
+
+
+// ========================================
+// SETTINGS
+// ========================================
+
+let pixelSize = 8;
+
+let dissolveRadius = 90;
+
+let dissolveSpeed = 3;
+
+let pixels = [];
+
+let columns = 0;
+let rows = 0;
+
+let discoveredCount = 0;
+let pendingCount = 0;
+
+let gameStarted = false;
+let gameWon = false;
+
+let startTime = 0;
+let finishTime = 0;
+
+let lastPointer = null;
+
+const pixelColours = [
+    "#f02b91",
+    "#c98bd8",
+    "#f21b12",
+    "#fff7f5",
+    "#080808"
+];
+
+
+// ========================================
+// SETTINGS VISIBILITY
+// ========================================
+
+toggleSettings.addEventListener("click", () => {
+
+    const hidden =
+        settingsPanel.classList.toggle("hidden-settings");
+
+    toggleSettings.textContent = hidden
+        ? "⚙ SHOW SETTINGS"
+        : "✕ HIDE SETTINGS";
+
+});
+
+
+// ========================================
+// CANVAS RESIZE
+// ========================================
+
+function resizeCanvas() {
+
+    const dpr = window.devicePixelRatio || 1;
+
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    resetGame();
+
+}
+
+
+// ========================================
+// CREATE PIXELS
+// ========================================
+
+function createPixels() {
+
+    columns = Math.ceil(
+        window.innerWidth / pixelSize
+    );
+
+    rows = Math.ceil(
+        window.innerHeight / pixelSize
+    );
+
+    pixels = [];
+
+    for (let y = 0; y < rows; y++) {
+
+        for (let x = 0; x < columns; x++) {
+
+            const px = x * pixelSize;
+            const py = y * pixelSize;
+
+            pixels.push({
+
+                x: px,
+                y: py,
+
+                width: Math.min(
+                    pixelSize + 0.5,
+                    window.innerWidth - px
+                ),
+
+                height: Math.min(
+                    pixelSize + 0.5,
+                    window.innerHeight - py
+                ),
+
+                colour:
+                    pixelColours[
+                        Math.floor(Math.random() * pixelColours.length)
+                    ],
+
+                discovered: false,
+                finished: false,
+
+                revealStart: 0,
+                duration: 0
+
+            });
+
+        }
+
+    }
+
+}
+
+
+// ========================================
+// RESET GAME
+// ========================================
+
+function resetGame() {
+
+    createPixels();
+
+    discoveredCount = 0;
+    pendingCount = 0;
+
+    gameStarted = false;
+    gameWon = false;
+
+    startTime = 0;
+    finishTime = 0;
+
+    lastPointer = null;
+
+    tip.classList.remove("hide");
+
+    winScreen.classList.remove("show");
+
+    updateProgress();
+
+}
+
+
+// ========================================
+// IMAGE UPLOAD
+// ========================================
+
+imageUpload.addEventListener("change", (event) => {
+
+    const file = event.target.files[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+
+        alert("Please upload a valid image.");
+
+        return;
+
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+
+        backgroundImage.style.backgroundImage =
+            `url("${e.target.result}")`;
+
+        imageName.textContent = file.name;
+
+        removeImage.style.display = "block";
+
+        resetGame();
+
+    };
+
+    reader.readAsDataURL(file);
+
+});
+
+
+// ========================================
+// REMOVE IMAGE
+// ========================================
+
+removeImage.addEventListener("click", () => {
+
+    backgroundImage.style.backgroundImage = "none";
+
+    imageUpload.value = "";
+
+    imageName.textContent = "No image selected";
+
+    removeImage.style.display = "none";
+
+    resetGame();
+
+});
+
+
+// ========================================
+// DISCOVER PIXELS
+// ========================================
+
+function discoverPixels(mouseX, mouseY) {
+
+    if (gameWon) return;
+
+    const now = performance.now();
+
+    if (!gameStarted) {
+
+        gameStarted = true;
+
+        startTime = now;
+
+        tip.classList.add("hide");
+
+    }
+
+    const minCol = Math.max(
+        0,
+        Math.floor((mouseX - dissolveRadius) / pixelSize)
+    );
+
+    const maxCol = Math.min(
+        columns - 1,
+        Math.floor((mouseX + dissolveRadius) / pixelSize)
+    );
+
+    const minRow = Math.max(
+        0,
+        Math.floor((mouseY - dissolveRadius) / pixelSize)
+    );
+
+    const maxRow = Math.min(
+        rows - 1,
+        Math.floor((mouseY + dissolveRadius) / pixelSize)
+    );
+
+    for (let row = minRow; row <= maxRow; row++) {
+
+        for (let col = minCol; col <= maxCol; col++) {
+
+            const pixel = pixels[row * columns + col];
+
+            if (!pixel || pixel.discovered) continue;
+
+            const centerX = pixel.x + pixel.width / 2;
+            const centerY = pixel.y + pixel.height / 2;
+
+            const dx = centerX - mouseX;
+            const dy = centerY - mouseY;
+
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance <= dissolveRadius) {
+
+                pixel.discovered = true;
+
+                pixel.revealStart = now;
+
+                pixel.duration =
+                    (90 + Math.random() * 110) / dissolveSpeed;
+
+                discoveredCount++;
+
+                pendingCount++;
+
+            }
+
+        }
+
+    }
+
+    updateProgress();
+
+}
+
+
+// ========================================
+// SMOOTH CURSOR TRAIL
+// ========================================
+
+function handlePointer(event) {
+
+    if (gameWon) return;
+
+    const current = {
+        x: event.clientX,
+        y: event.clientY
+    };
+
+    if (!lastPointer) {
+
+        discoverPixels(current.x, current.y);
+
+    } else {
+
+        const dx = current.x - lastPointer.x;
+        const dy = current.y - lastPointer.y;
+
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        const steps = Math.max(
+            1,
+            Math.ceil(distance / (pixelSize * 0.6))
+        );
+
+        for (let i = 1; i <= steps; i++) {
+
+            const t = i / steps;
+
+            const x = lastPointer.x + dx * t;
+            const y = lastPointer.y + dy * t;
+
+            discoverPixels(x, y);
+
+        }
+
+    }
+
+    lastPointer = current;
+
+}
+
+canvas.addEventListener("pointermove", handlePointer);
+
+canvas.addEventListener("pointerleave", () => {
+
+    lastPointer = null;
+
+});
+
+
+// ========================================
+// PROGRESS
+// ========================================
+
+function updateProgress() {
+
+    const total = pixels.length;
+
+    const percentage = total
+        ? Math.floor((discoveredCount / total) * 100)
+        : 0;
+
+    document.getElementById("progressText")
+        .textContent = percentage + "%";
+
+    document.getElementById("progressFill")
+        .style.width = percentage + "%";
+
+    document.getElementById("pixelCount")
+        .textContent =
+        discoveredCount.toLocaleString() +
+        " / " +
+        total.toLocaleString() +
+        " PIXELS FOUND";
+
+}
+
+
+// ========================================
+// TIME FORMAT
+// ========================================
+
+function formatTime(milliseconds) {
+
+    return (milliseconds / 1000).toFixed(2) + "s";
+
+}
+
+
+// ========================================
+// WIN CONDITION
+// ========================================
+
+function checkWin(now) {
+
+    if (
+        !gameWon &&
+        discoveredCount === pixels.length &&
+        pendingCount === 0
+    ) {
+
+        gameWon = true;
+
+        finishTime = now - startTime;
+
+        showWinningScreen();
+
+    }
+
+}
+
+
+// ========================================
+// WIN SCREEN
+// ========================================
+
+function showWinningScreen() {
+
+    const seconds = finishTime / 1000;
+
+    const score = Math.max(
+        0,
+        Math.round(10000 / (1 + seconds / 20))
+    );
+
+    document.getElementById("finalScore")
+        .textContent = score.toLocaleString();
+
+    document.getElementById("finalTime")
+        .textContent = formatTime(finishTime);
+
+    document.getElementById("finalPixels")
+        .textContent = discoveredCount.toLocaleString();
+
+    winScreen.classList.add("show");
+
+}
+
+
+// ========================================
+// ANIMATION
+// ========================================
+
+function animate() {
+
+    const now = performance.now();
+
+    ctx.clearRect(
+        0,
+        0,
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    for (const pixel of pixels) {
+
+        // Undiscovered pixels stay solid
+
+        if (!pixel.discovered) {
+
+            ctx.fillStyle = pixel.colour;
+
+            ctx.fillRect(
+                pixel.x,
+                pixel.y,
+                pixel.width,
+                pixel.height
+            );
+
+        }
+
+        // Animate discovered pixels
+
+        else if (!pixel.finished) {
+
+            const elapsed =
+                now - pixel.revealStart;
+
+            const progress = Math.min(
+                elapsed / pixel.duration,
+                1
+            );
+
+            if (progress >= 1) {
+
+                pixel.finished = true;
+
+                pendingCount--;
+
+                continue;
+
+            }
+
+            // Pixel shrinks into itself
+
+            const scale = 1 - progress;
+
+            const drawWidth = pixel.width * scale;
+            const drawHeight = pixel.height * scale;
+
+            const offsetX =
+                (pixel.width - drawWidth) / 2;
+
+            const offsetY =
+                (pixel.height - drawHeight) / 2;
+
+            ctx.fillStyle = pixel.colour;
+
+            ctx.fillRect(
+                pixel.x + offsetX,
+                pixel.y + offsetY,
+                drawWidth + 0.5,
+                drawHeight + 0.5
+            );
+
+        }
+
+    }
+
+    if (!gameWon && discoveredCount === pixels.length) {
+
+        checkWin(now);
+
+    }
+
+    requestAnimationFrame(animate);
+
+}
+
+
+// ========================================
+// SETTINGS CONTROLS
+// ========================================
+
+const radiusControl =
+    document.getElementById("radiusControl");
+
+const speedControl =
+    document.getElementById("speedControl");
+
+const pixelControl =
+    document.getElementById("pixelControl");
+
+
+// Brush size
+
+radiusControl.addEventListener("input", () => {
+
+    dissolveRadius = Number(radiusControl.value);
+
+    document.getElementById("radiusValue")
+        .textContent = dissolveRadius + "px";
+
+});
+
+
+// Dissolve speed
+
+speedControl.addEventListener("input", () => {
+
+    dissolveSpeed = Number(speedControl.value);
+
+    document.getElementById("speedValue")
+        .textContent = dissolveSpeed + "x";
+
+});
+
+
+// Pixel size
+
+pixelControl.addEventListener("input", () => {
+
+    pixelSize = Number(pixelControl.value);
+
+    document.getElementById("pixelValue")
+        .textContent = pixelSize + "px";
+
+    resetGame();
+
+});
+
+
+// ========================================
+// RESET GAME
+// ========================================
+
+document.getElementById("resetButton")
+.addEventListener("click", () => {
+
+    pixelSize = 8;
+
+    dissolveRadius = 90;
+
+    dissolveSpeed = 3;
+
+    radiusControl.value = 90;
+    speedControl.value = 3;
+    pixelControl.value = 8;
+
+    document.getElementById("radiusValue")
+        .textContent = "90px";
+
+    document.getElementById("speedValue")
+        .textContent = "3x";
+
+    document.getElementById("pixelValue")
+        .textContent = "8px";
+
+    resetGame();
+
+});
+
+
+// ========================================
+// PLAY AGAIN
+// ========================================
+
+document.getElementById("playAgain")
+.addEventListener("click", () => {
+
+    resetGame();
+
+});
+
+
+// ========================================
+// START
+// ========================================
+
+window.addEventListener("resize", resizeCanvas);
+
+resizeCanvas();
+
+animate();
+
+</script>
+
+</body>
+</html>
